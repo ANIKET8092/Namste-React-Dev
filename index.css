@@ -50,3 +50,27 @@
   margin: 10px;
   cursor: pointer;
 }
+
+.shimmer-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  text-align: center;
+  margin: 10px auto;
+}
+.shimmer-cart {
+  width: 200px;
+  height: 200px;
+  background-color: grey;
+}
+.login {
+  margin-right: 5px;
+}
+
+.filter {
+  display: flex;
+}
+
+.search {
+  margin-top: 8px;
+}

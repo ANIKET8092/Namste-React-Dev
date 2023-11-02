@@ -7,7 +7,7 @@ const RestaurentCard = (props) => {
     cuisines,
     area,
     lastMileTravelString,
-    costForTwoString,
+    costForTwo,
     avgRating,
   } = props;
   return (
@@ -18,7 +18,7 @@ const RestaurentCard = (props) => {
       <h4>{area}</h4>
       <h4>{avgRating}</h4>
       <h4>{lastMileTravelString}</h4>
-      <h4>{costForTwoString}</h4>
+      <h4>{costForTwo}</h4>
     </div>
   );
 };
