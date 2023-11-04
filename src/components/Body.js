@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import { Link } from "react-router-dom";
 import RestaurentCard from "./RestaurentCard";
 import Shimmer from "./Shimmer";
 
@@ -14,6 +15,9 @@ const Body = () => {
     setListOfRestaurent(filteredList);
   };
 
+  //   if no dependecy array  => useEffect is called on each render
+  // if dependency array is empty []=>useffect is called only once in initial render.
+  // if dependency
   useEffect(() => {
     fetchData();
   }, []);
@@ -21,7 +25,7 @@ const Body = () => {
   const fetchData = async () => {
     try {
       const response = await fetch(
-        "https://corsproxy.io/?https://www.swiggy.com/dapi/restaurants/list/v5?lat=21.1702401&lng=72.83106070000001&page_type=DESKTOP_WEB_LISTING"
+        "https://corsproxy.io/?https://www.swiggy.com/dapi/restaurants/list/v5?lat=12.9351929&lng=77.62448069999999&page_type=DESKTOP_WEB_LISTING"
       );
 
       if (!response.ok) {
@@ -92,7 +96,12 @@ const Body = () => {
 
         {filteresRestaurent.map((restaurant) => {
           return (
-            <RestaurentCard key={restaurant.info.id} {...restaurant.info} />
+            <Link
+              key={restaurant.info.id}
+              to={"/restaurents/" + restaurant.info.id}
+            >
+              <RestaurentCard {...restaurant.info} />
+            </Link>
           );
         })}
       </div>
