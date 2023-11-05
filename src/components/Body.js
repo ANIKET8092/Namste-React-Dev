@@ -2,11 +2,14 @@ import React, { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import RestaurentCard from "./RestaurentCard";
 import Shimmer from "./Shimmer";
+import useOnlineStatus from "../utils/useOnlineStatus";
 
 const Body = () => {
   const [listOfRestaurent, setListOfRestaurent] = useState([]);
   const [filteresRestaurent, setFilteredRestaurent] = useState([]);
   const [searchText, setSearchtext] = useState("");
+
+  const onlineStatus = useOnlineStatus();
 
   const handleClick = () => {
     const filteredList = listOfRestaurent.filter(
@@ -58,6 +61,14 @@ const Body = () => {
       console.error("Error fetching data:", error);
     }
   };
+
+  if (onlineStatus === false) {
+    return (
+      <h1>
+        Looks like you are offline!! Please check your internet Connection;
+      </h1>
+    );
+  }
 
   return listOfRestaurent?.length == 0 ? (
     <Shimmer />
