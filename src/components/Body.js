@@ -1,21 +1,29 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useContext, useState } from "react";
 import { Link } from "react-router-dom";
-import RestaurentCard from "./RestaurentCard";
+import RestaurentCard, { isOpenrestaurent } from "./RestaurentCard";
 import Shimmer from "./Shimmer";
 import useOnlineStatus from "../utils/useOnlineStatus";
+import { UserContext } from "../utils/userContext";
 
 const Body = () => {
   const [listOfRestaurent, setListOfRestaurent] = useState([]);
-  const [filteresRestaurent, setFilteredRestaurent] = useState([]);
+  const [filteredRestaurent, setFilteredRestaurent] = useState([]);
   const [searchText, setSearchtext] = useState("");
+  const nameDataFromContext = useContext(UserContext);
+  // here RestaurentCardOpen is an HOC
+  const RestaurentCardOpen = isOpenrestaurent(RestaurentCard);
 
   const onlineStatus = useOnlineStatus();
 
   const handleClick = () => {
     const filteredList = listOfRestaurent.filter(
-      (star) => star.data.avgRating > 4
+      (star) => star?.info?.avgRating > 4
     );
-    setListOfRestaurent(filteredList);
+    setFilteredRestaurent(filteredList);
+  };
+
+  const handleInputChange = (e) => {
+    nameDataFromContext.setUserName(e.target.value);
   };
 
   //   if no dependecy array  => useEffect is called on each render
@@ -61,7 +69,7 @@ const Body = () => {
       console.error("Error fetching data:", error);
     }
   };
-
+  console.log(listOfRestaurent);
   if (onlineStatus === false) {
     return (
       <h1>
@@ -74,14 +82,16 @@ const Body = () => {
     <Shimmer />
   ) : (
     <div className="body">
-      <div className="filter">
-        <div className="search">
+      <div className="filter flex">
+        <div className="search m-4 p-4">
           <input
+            className=" border-solid border-black border "
             type="text"
             value={searchText}
             onChange={(e) => setSearchtext(e.target.value)}
           />
           <button
+            className=" bg-green-100 py-2 px-4 rounded-lg "
             onClick={() => {
               //   search Funcationality
 
@@ -98,20 +108,35 @@ const Body = () => {
             Search
           </button>
         </div>
-        <button className="filter-btn" onClick={handleClick}>
-          Top Rated Restaurents
-        </button>
+        <div className="search m-4 p-4 flex items-center ">
+          {/* <button
+            className="bg-gray-100 px-4 py-2 rounded-lg"
+            onClick={handleClick}
+          >
+            Top Rated Restaurents
+          </button> */}
+          <input
+            type="text"
+            className="border"
+            value={nameDataFromContext.loggedInUser}
+            onChange={handleInputChange}
+          />
+        </div>
       </div>
-      <div className="res-container">
+      <div className="res-container flex flex-wrap">
         {/* Restaurent Card */}
 
-        {filteresRestaurent.map((restaurant) => {
+        {filteredRestaurent.map((restaurant) => {
           return (
             <Link
               key={restaurant.info.id}
               to={"/restaurents/" + restaurant.info.id}
             >
-              <RestaurentCard {...restaurant.info} />
+              {restaurant.info.isOpen ? (
+                <RestaurentCardOpen {...restaurant.info} />
+              ) : (
+                <RestaurentCard {...restaurant.info} />
+              )}
             </Link>
           );
         })}

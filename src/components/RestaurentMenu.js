@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 import useRestaurentMenu from "../utils/UseRestaurentMenu";
+import Restaurentcatogeries from "./Restaurentcatogeries";
 // import { MENU_URL } from "../utils/constant";
 import { useParams } from "react-router-dom";
 import Shimmer from "./Shimmer";
 export const RestaurentMenu = () => {
   const { resId } = useParams();
-  // const [resInfo, setResInfo] = useState(null);
+  const [showIndex, setShowIndex] = useState(null);
   const resInfo = useRestaurentMenu(resId);
 
   // useEffect(() => {
@@ -23,6 +24,10 @@ export const RestaurentMenu = () => {
   //   setResInfo(response);
   // };
 
+  const hello = (val) => {
+    console.log("hello world", val);
+  };
+
   if (resInfo === null) {
     return <Shimmer />;
   }
@@ -32,23 +37,31 @@ export const RestaurentMenu = () => {
 
   const { itemCards } =
     resInfo?.cards[2]?.groupedCard?.cardGroupMap?.REGULAR?.cards[1]?.card?.card;
-  console.log(itemCards);
+  // console.log(35, resInfo?.cards[2]?.groupedCard?.cardGroupMap?.REGULAR?.cards);
+  const catogeries =
+    resInfo?.cards[2]?.groupedCard?.cardGroupMap?.REGULAR?.cards?.filter(
+      (c) =>
+        c.card?.card?.["@type"] ===
+        "type.googleapis.com/swiggy.presentation.food.v2.ItemCategory"
+    );
 
   return (
-    <div className="menu">
-      <h1>{name}</h1>
-      <h2>{cuisines.join(", ")}</h2>
-      <h2>{costForTwoMessage}</h2>
-      <ul>
-        {itemCards.map((id) => {
-          return (
-            <li>
-              {id.card.info.name} -
-              {id.card.info.defaultPrice / 100 || id.card.info.price / 100}
-            </li>
-          );
-        })}
-      </ul>
+    <div className="text-center">
+      <h1 className="font-bold my-6 text-2xl">{name}</h1>
+      <p className="font-bold text-lg">
+        {cuisines.join(", ")} - {costForTwoMessage}
+      </p>
+      {catogeries.map((catogery, index) => {
+        return (
+          <Restaurentcatogeries
+            key={catogery?.card?.card?.title}
+            showItem={index === showIndex ? true : false}
+            data={catogery?.card?.card}
+            setShowIndex={() => setShowIndex(index)}
+            hello={hello}
+          />
+        );
+      })}
     </div>
   );
 };
